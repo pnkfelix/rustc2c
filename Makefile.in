@@ -1,0 +1,43 @@
+# For now, just copy this into a `Makefile` in a build dir and update
+# SRC_DIR to point at the this root directory that holds lib.rs. (If
+# you want to play fast and loose, use the local dir as your build
+# dir.)
+
+SRC_DIR=..
+
+LIB_SRC_FILE=$(SRC_DIR)/lib.rs
+CRATE_NAME=$(shell rustc --crate-name $(LIB_SRC_FILE))
+ACTUAL_DYLIB=$(shell rustc $(DYLIB_OPT) --crate-file-name $(LIB_SRC_FILE))
+
+LIB_TESTER=$(CRATE_NAME)-test
+BENCHER=$(CRATE_NAME)-bench
+DYLIB=lib$(CRATE_NAME).dylib
+
+DYLIB_OPT=--crate-type dylib
+
+$(DYLIB): $(ACTUAL_DYLIB)
+	ln -sf $< $@
+
+$(ACTUAL_DYLIB): $(LIB_SRC_FILE)
+	rustc $(DYLIB_OPT) $<
+
+$(LIB_TESTER): $(LIB_SRC_FILE)
+	rustc --test $< -o $@
+
+clean:
+	rm $(DYLIB) $(ACTUAL_DYLIB)
+
+test: $(LIB_TESTER)
+	./$< --test
+
+bench: $(LIB_TESTER)
+	./$< --bench
+
+c_smoke: $(SRC_DIR)/rustc2c.c $(DYLIB)
+	$(CC) -o $@ $<
+
+c_smoke_test: c_smoke
+	./$<
+
+rkt_smoke_test: $(SRC_DIR)/rustc2c.rkt $(DYLIB)
+	racket $<
