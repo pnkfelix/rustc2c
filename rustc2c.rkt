@@ -37,5 +37,13 @@
 
 (define-runtime-path foo.rs "foo.rs")
 
-(call_with_native_runtime 0 '() (lambda () (run_compiler `("rustc" ,foo.rs) 2)))
+(call_with_native_runtime
+ 0 '()
+ (lambda ()
+   (displayln "Got to Racket from Rust call_with_native_runtime")
+   (displayln "Running rustc now")
+   (run_compiler `("rustc" ,foo.rs) 2)
+   (displayln "Got back from rustc though who knows if it failed")
+   ))
+
 

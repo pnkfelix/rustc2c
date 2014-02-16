@@ -20,7 +20,9 @@ pub extern "C" fn run_compiler(args: **c_char, len: u32) -> u32 {
     if some_failed {
         return 1;
     } else {
+        println!("About to call rustc::run_compiler");
         run_compiler(strs);
+        println!("Returned from rustc::run_compiler");
         return 0;
     }
 }
