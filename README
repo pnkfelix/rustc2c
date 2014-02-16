@@ -1,0 +1,13 @@
+The goal of this project is to provide a small shim of C-compatible
+bindings around the Rust compiler `rustc`.
+
+My end goal is to be able to access `libsyntax` and librustc` from
+other linguistic environments such as Java (e.g. for Eclipse) and
+Scheme (e.g. for DrRacket).  The C language is just the lowest common
+denominator that all systems should be able to agree on in their
+FFI's.
+
+The main testbed will probably be a C client (since everyone should be
+able to grok C) and a Racket client (since that's what I care most
+about in the short term).  See the `c_smoke_test` and `rkt_smoke_test`
+targets in the Makefile.
