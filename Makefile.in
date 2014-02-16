@@ -5,6 +5,7 @@ default: $(DYLIB)
 smoke-tests: c-smoke-test rkt-smoke-test
 
 LIB_SRC_FILE=$(SRC_DIR)/lib.rs
+ALL_SRC_FILES=$(SRC_DIR)/lib.rs $(SRC_DIR)/smoke_test.rs
 CRATE_NAME=$(shell rustc --crate-name $(LIB_SRC_FILE))
 ACTUAL_DYLIB=$(shell rustc $(DYLIB_OPT) --crate-file-name $(LIB_SRC_FILE))
 
@@ -17,7 +18,7 @@ DYLIB_OPT=--crate-type dylib
 $(DYLIB): $(ACTUAL_DYLIB)
 	ln -sf $< $@
 
-$(ACTUAL_DYLIB): $(LIB_SRC_FILE)
+$(ACTUAL_DYLIB): $(LIB_SRC_FILE) $(ALL_SRC_FILES)
 	rustc $(DYLIB_OPT) $<
 
 $(LIB_TESTER): $(LIB_SRC_FILE)
