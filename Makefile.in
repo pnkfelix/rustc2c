@@ -1,9 +1,5 @@
-# For now, just copy this into a `Makefile` in a build dir and update
-# SRC_DIR to point at the this root directory that holds lib.rs. (If
-# you want to play fast and loose, use the local dir as your build
-# dir.)
-
-SRC_DIR=..
+# Read-in by a (very simple-minded) configure to generate Makefile.
+SRC_DIR=%SRC_DIR%
 
 default: $(DYLIB)
 smoke-tests: c-smoke-test rkt-smoke-test
