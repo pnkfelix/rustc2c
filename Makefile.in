@@ -5,6 +5,9 @@
 
 SRC_DIR=..
 
+default: $(DYLIB)
+smoke-tests: c-smoke-test rkt-smoke-test
+
 LIB_SRC_FILE=$(SRC_DIR)/lib.rs
 CRATE_NAME=$(shell rustc --crate-name $(LIB_SRC_FILE))
 ACTUAL_DYLIB=$(shell rustc $(DYLIB_OPT) --crate-file-name $(LIB_SRC_FILE))
@@ -36,8 +39,8 @@ bench: $(LIB_TESTER)
 c_smoke: $(SRC_DIR)/rustc2c.c $(DYLIB)
 	$(CC) -o $@ $<
 
-c_smoke_test: c_smoke
+c-smoke-test: c_smoke
 	./$<
 
-rkt_smoke_test: $(SRC_DIR)/rustc2c.rkt $(DYLIB)
+rkt-smoke-test: $(SRC_DIR)/rustc2c.rkt $(DYLIB)
 	racket $<
