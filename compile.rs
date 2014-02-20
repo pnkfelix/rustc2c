@@ -6,6 +6,14 @@ use std::vec;
 #[no_mangle]
 pub extern "C" fn run_compiler(args: **c_char, len: u32) -> u32 {
     use rustc::run_compiler;
+
+    struct OnShutdown;
+    impl Drop for OnShutdown {
+        fn drop(&mut self) {
+            println!("Drop OnShutdown run_compiler");
+        }
+    }
+
     let mut some_failed = false;
     let mut strs = vec::with_capacity(len as uint);
     unsafe {
@@ -21,6 +29,7 @@ pub extern "C" fn run_compiler(args: **c_char, len: u32) -> u32 {
         return 1;
     } else {
         println!("About to call rustc::run_compiler");
+        let osd = OnShutdown;
         run_compiler(strs);
         println!("Returned from rustc::run_compiler");
         return 0;
