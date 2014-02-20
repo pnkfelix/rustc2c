@@ -23,9 +23,14 @@ mod compile;
 mod print;
 
 #[no_mangle]
-pub extern "C" fn call_with_native_runtime(argc: u32, argv: **u8, f: extern "C" fn()) -> i32 {
+pub extern "C" fn call_with_native_runtime(
+    argc: u32,
+    argv: **u8,
+    ctxt: *u8,
+    f: extern "C" fn(ctxt: *u8))
+    -> i32 {
     let code = native::start(argc as int, argv, proc() {
-            f()
+            f(ctxt)
         });
     return code as i32;
 }

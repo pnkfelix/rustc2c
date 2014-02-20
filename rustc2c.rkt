@@ -32,14 +32,21 @@
 (caller (lambda (from) (displayln (string-append "called Racket from " from))))
 (call2d (lambda (g) (g "Racket")))
 
-(define-rustc2c call_with_native_runtime (_fun _uint32 (_list i _string*/utf-8) (_fun -> _void) -> _int32))
+(define-rustc2c call_with_native_runtime
+  (_fun _uint32
+        (_list i _string*/utf-8)
+        (_cpointer/null _uint8)
+        (_fun (_cpointer/null _uint8)
+              -> _void)
+        -> _int32))
 (define-rustc2c run_compiler (_fun (_list i _string*/utf-8) _uint32 -> _uint32))
 
 (define-runtime-path foo.rs "foo.rs")
 
 (call_with_native_runtime
  0 '()
- (lambda ()
+ #f
+ (lambda (arg)
    (displayln "Got to Racket from Rust call_with_native_runtime")
    (displayln "Running rustc now")
    (run_compiler `("rustc" ,foo.rs) 2)
